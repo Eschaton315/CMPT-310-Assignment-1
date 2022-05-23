@@ -105,7 +105,29 @@ def shortest_path(source, target):
     path = []
     visited = []
 
-    breadth_first_search(source, target, queue, path, visited)
+    # breadth_first_search(source, target, queue, path, visited)
+
+    queue.add(Node(source, None, None))
+
+    while not queue.empty():
+        node = queue.remove()
+        visited.append(node.state)
+        # if node.action is not None:
+        path.append((node.action, node.state))
+        neighbors = neighbors_for_person(node.state)
+        for movie_id, person_id in neighbors:
+            if(person_id not in visited):
+                # create a node
+                queue.add(Node(person_id, None, movie_id))
+                # queue.add(person_id)
+                if person_id == target:
+                    path.pop(0)
+                    path.append((node.movie_id, node.person_id))
+                    return path
+        path.pop(0)
+
+    # path.pop(0)
+
     
     if(len(path) == 0):
         return None
@@ -128,9 +150,9 @@ def breadth_first_search(source, target, queue, path, visited):
             queue.add(neighbor)
     
     while not queue.empty():
-        head = queue.remove()
-        path.append(head)
-        breadth_first_search(head[1], target, queue, path, visited)        
+        node = queue.remove()
+        path.append(node)
+        breadth_first_search(node[1], target, queue, path, visited)        
 
     path.pop(0)
 
