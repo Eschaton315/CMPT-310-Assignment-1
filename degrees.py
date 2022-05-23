@@ -55,7 +55,7 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "small"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "evensmaller"
 
     # Load data from files into memory
     print("Loading data...")
@@ -91,9 +91,48 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+  
+    # If the source is the same as the target, return a list of size 0
+    if(source == target):
+        return []
 
-    # TODO
-    raise NotImplementedError
+    neighbors = neighbors_for_person(source)
+
+    if(len(neighbors) == 0):
+        return None
+
+    queue = QueueFrontier()
+    path = []
+    visited = []
+
+    breadth_first_search(source, target, queue, path, visited)
+    
+    if(len(path) == 0):
+        return None
+    else:
+        return path
+
+def breadth_first_search(source, target, queue, path, visited):
+    if (source == target):
+        return
+
+    visited.append(source)
+
+    neighbors = neighbors_for_person(source)
+
+    if(len(neighbors) == 0):
+        return None
+
+    for neighbor in neighbors:
+        if(neighbor[1] not in visited):
+            queue.add(neighbor)
+    
+    while not queue.empty():
+        head = queue.remove()
+        path.append(head)
+        breadth_first_search(head[1], target, queue, path, visited)        
+
+    path.pop(0)
 
 
 def person_id_for_name(name):
