@@ -55,17 +55,17 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "small"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
 
     # Load data from files into memory
     print("Loading data...")
     load_data(directory)
     print("Data loaded.")
 
-    source = person_id_for_name(input("Source Name: "))
+    source = person_id_for_name(input("Name: "))
     if source is None:
         sys.exit("Person not found.")
-    target = person_id_for_name(input("Target Name: "))
+    target = person_id_for_name(input("Name: "))
     if target is None:
         sys.exit("Person not found.")
 
@@ -92,15 +92,6 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # If the source is the same as the target, return a list of size 0
-    # if(source == target):
-    #     return []
-
-    # neighbors = neighbors_for_person(source)
-
-    # if(len(neighbors) == 0):
-    #     return None
-
     queue = QueueFrontier()
     paths = []
     visited = []
@@ -114,48 +105,18 @@ def shortest_path(source, target):
         path = paths.pop(0)
         n = path[-1]
         if n[1] == target:
-            # print(paths)
             path.pop(0)
-            # print(path)
             return path
         neighbors = neighbors_for_person(node.state)
         for movie_id, person_id in neighbors:
             if (person_id not in visited):
                 visited.append(person_id)
-                # path.append((movie_id, person_id))
                 queue.add(Node(person_id, None, movie_id))
                 new_path = list(path)
                 new_path.append((movie_id, person_id))
                 paths.append(new_path)
 
-    # if(len(paths) == 0):
-    #     return None
-    # else:
-    #     return paths
     return None
-
-def breadth_first_search(source, target, queue, path, visited):
-    if (source == target):
-        return
-
-    visited.append(source)
-
-    neighbors = neighbors_for_person(source)
-
-    if(len(neighbors) == 0):
-        return None
-
-    for neighbor in neighbors:
-        if(neighbor[1] not in visited):
-            queue.add(neighbor)
-    
-    while not queue.empty():
-        node = queue.remove()
-        path.append(node)
-        breadth_first_search(node[1], target, queue, path, visited)        
-
-    path.pop(0)
-
 
 def person_id_for_name(name):
     """
