@@ -55,7 +55,7 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "evensmaller"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "small"
 
     # Load data from files into memory
     print("Loading data...")
@@ -91,48 +91,48 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-  
+
     # If the source is the same as the target, return a list of size 0
-    if(source == target):
-        return []
+    # if(source == target):
+    #     return []
 
-    neighbors = neighbors_for_person(source)
+    # neighbors = neighbors_for_person(source)
 
-    if(len(neighbors) == 0):
-        return None
+    # if(len(neighbors) == 0):
+    #     return None
 
     queue = QueueFrontier()
-    path = []
+    paths = []
     visited = []
 
-    # breadth_first_search(source, target, queue, path, visited)
-
     queue.add(Node(source, None, None))
+    visited.append(source)
+    paths.append([(None, source)])
 
     while not queue.empty():
         node = queue.remove()
-        visited.append(node.state)
-        # if node.action is not None:
-        path.append((node.action, node.state))
+        path = paths.pop(0)
+        n = path[-1]
+        if n[1] == target:
+            # print(paths)
+            path.pop(0)
+            # print(path)
+            return path
         neighbors = neighbors_for_person(node.state)
         for movie_id, person_id in neighbors:
-            if(person_id not in visited):
-                # create a node
+            if (person_id not in visited):
+                visited.append(person_id)
+                # path.append((movie_id, person_id))
                 queue.add(Node(person_id, None, movie_id))
-                # queue.add(person_id)
-                if person_id == target:
-                    path.pop(0)
-                    path.append((node.movie_id, node.person_id))
-                    return path
-        path.pop(0)
+                new_path = list(path)
+                new_path.append((movie_id, person_id))
+                paths.append(new_path)
 
-    # path.pop(0)
-
-    
-    if(len(path) == 0):
-        return None
-    else:
-        return path
+    # if(len(paths) == 0):
+    #     return None
+    # else:
+    #     return paths
+    return None
 
 def breadth_first_search(source, target, queue, path, visited):
     if (source == target):
